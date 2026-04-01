@@ -42,9 +42,14 @@ function App() {
     setFileData(data)
     setQualityReport(report)
     setIsAnalyzing(true)
-    const result = await analyzeData(data, report)
-    setIsAnalyzing(false)
-    setAnalysisResult(result)
+    try {
+      const result = await analyzeData(data, report)
+      setAnalysisResult(result)
+    } catch {
+      setAnalysisResult({ error: true, message: 'Analysis failed. Please try again.' })
+    } finally {
+      setIsAnalyzing(false)
+    }
   }
 
   function handleReset() {
@@ -73,7 +78,7 @@ function App() {
           <div>
             <h1 className="text-2xl font-bold text-slate-100">Data Analyzer</h1>
             <p className="text-sm text-slate-400 mt-0.5">
-              Upload your data. Get instant AI-powered insights.
+              Automated quality checks, AI-powered insights, and meaningful charts — for any CSV or Excel dataset.
             </p>
           </div>
           <a

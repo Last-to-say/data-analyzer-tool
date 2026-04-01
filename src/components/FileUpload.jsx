@@ -3,6 +3,8 @@ import Papa from 'papaparse'
 import * as XLSX from 'xlsx'
 
 const ACCEPTED_EXTENSIONS = ['.csv', '.xlsx', '.xls']
+const MAX_FILE_SIZE = 10 * 1024 * 1024  // 10 MB
+const MAX_ROWS      = 50_000
 
 function detectColumnType(values) {
   const nonEmpty = values.filter((v) => v !== null && v !== undefined && v !== '')
@@ -68,6 +70,11 @@ export default function FileUpload({ onDataLoaded }) {
         return
       }
 
+      if (file.size > MAX_FILE_SIZE) {
+        setError('File too large. Max size is 10MB.')
+        return
+      }
+
       setLoading(true)
       const name = file.name.toLowerCase()
 
@@ -79,6 +86,10 @@ export default function FileUpload({ onDataLoaded }) {
             setLoading(false)
             if (result.errors.length > 0 && result.data.length === 0) {
               setError('Could not read the CSV file. It may be empty or malformed.')
+              return
+            }
+            if (result.data.length > MAX_ROWS) {
+              setError(`Too many rows. Please upload under 50,000 rows.`)
               return
             }
             const data = buildResult(file.name, result.data)
@@ -98,6 +109,10 @@ export default function FileUpload({ onDataLoaded }) {
             const sheet = workbook.Sheets[workbook.SheetNames[0]]
             const rows = XLSX.utils.sheet_to_json(sheet, { defval: '' })
             setLoading(false)
+            if (rows.length > MAX_ROWS) {
+              setError(`Too many rows. Please upload under 50,000 rows.`)
+              return
+            }
             const data = buildResult(file.name, rows)
             setSuccess(`${file.name} loaded successfully.`)
             onDataLoaded(data)
@@ -209,6 +224,9 @@ export default function FileUpload({ onDataLoaded }) {
             <p className="text-xs text-slate-500 mt-1">
               Drag & drop here, or{' '}
               <span className="text-sky-400 underline">click to browse</span>
+            </p>
+            <p className="text-xs text-slate-600 mt-2">
+              Works well with: sales records, HR data, survey results, customer lists, or any structured dataset
             </p>
           </div>
         )}
