@@ -1,15 +1,23 @@
 import { useState } from 'react'
 import FileUpload from './components/FileUpload'
+import QualityReport from './components/QualityReport'
+import checkQuality from './utils/qualityChecker'
 
 function App() {
   const [fileData, setFileData] = useState(null)
+  const [qualityReport, setQualityReport] = useState(null)
+
+  function handleDataLoaded(data) {
+    setFileData(data)
+    setQualityReport(checkQuality(data))
+  }
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-start justify-center py-12 px-4">
       <div className="w-full max-w-2xl">
         <div className="bg-white rounded-2xl shadow-md p-8">
           <h1 className="text-2xl font-bold text-gray-800 mb-6">Data Analyzer</h1>
-          <FileUpload onDataLoaded={setFileData} />
+          <FileUpload onDataLoaded={handleDataLoaded} />
 
           {fileData && (
             <div className="mt-6">
@@ -58,6 +66,8 @@ function App() {
                   </tbody>
                 </table>
               </div>
+
+              {qualityReport && <QualityReport qualityReport={qualityReport} />}
             </div>
           )}
         </div>
