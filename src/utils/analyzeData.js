@@ -1,4 +1,4 @@
-const apiUrl = import.meta.env.VITE_API_URL || '/analyze';
+const apiUrl = import.meta.env.VITE_API_URL || '/api/analyze';
 
 function buildPrompt(data, qualityReport) {
   const { columns, columnTypes, sampleRows, rowCount } = data;
