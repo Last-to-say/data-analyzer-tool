@@ -1,0 +1,21 @@
+{
+    "rewrites": [
+        {
+            "source": "/analyze",
+            "destination": "/api/analyze"
+        }
+    ]
+}
+```
+
+Save it.
+
+---
+
+**Step 3 — Update the fetch URL in your React app**
+
+Open `src/utils/analyzeData.js`.
+
+Find the fetch call that points to:
+```
+http: //localhost:3001/analyze
