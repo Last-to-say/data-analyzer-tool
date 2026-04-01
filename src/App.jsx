@@ -1,15 +1,25 @@
 import { useState } from 'react'
 import FileUpload from './components/FileUpload'
 import QualityReport from './components/QualityReport'
+import AnalysisDisplay from './components/AnalysisDisplay'
 import checkQuality from './utils/qualityChecker'
+import analyzeData from './utils/analyzeData'
 
 function App() {
   const [fileData, setFileData] = useState(null)
   const [qualityReport, setQualityReport] = useState(null)
+  const [analysisResult, setAnalysisResult] = useState(null)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
 
-  function handleDataLoaded(data) {
+  async function handleDataLoaded(data) {
+    setAnalysisResult(null)
+    const report = checkQuality(data)
     setFileData(data)
-    setQualityReport(checkQuality(data))
+    setQualityReport(report)
+    setIsAnalyzing(true)
+    const result = await analyzeData(data, report)
+    setIsAnalyzing(false)
+    setAnalysisResult(result)
   }
 
   return (
@@ -68,6 +78,7 @@ function App() {
               </div>
 
               {qualityReport && <QualityReport qualityReport={qualityReport} />}
+              <AnalysisDisplay analysisResult={analysisResult} isLoading={isAnalyzing} />
             </div>
           )}
         </div>
