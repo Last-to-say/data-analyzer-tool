@@ -1,5 +1,9 @@
 # Data Analyzer Tool
 
+## Demo
+
+Live app: https://data-analyzer-tool-74ph.vercel.app/
+
 **Built with React · Powered by Claude AI**
 
 ---
