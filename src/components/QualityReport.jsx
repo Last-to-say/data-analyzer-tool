@@ -3,13 +3,13 @@ export default function QualityReport({ qualityReport }) {
 
   const badgeStyle =
     qualityScore > 80
-      ? { background: '#D1FAE5', color: '#065F46' }
+      ? { background: '#14532d', color: '#86efac' }
       : qualityScore >= 50
-      ? { background: '#FEF3C7', color: '#92400E' }
-      : { background: '#FEE2E2', color: '#991B1B' }
+      ? { background: '#451a03', color: '#fcd34d' }
+      : { background: '#450a0a', color: '#fca5a5' }
 
   return (
-    <div className="mt-6">
+    <div>
       <div
         className="inline-block px-4 py-2 rounded-xl font-bold text-lg mb-4"
         style={badgeStyle}
@@ -18,11 +18,11 @@ export default function QualityReport({ qualityReport }) {
       </div>
 
       {warnings.length === 0 ? (
-        <p className="text-green-700 font-medium">No data quality issues detected</p>
+        <p className="text-green-400 font-medium">No data quality issues detected</p>
       ) : (
         <ul className="space-y-1">
           {warnings.map((w, i) => (
-            <li key={i} className="text-sm text-gray-700">
+            <li key={i} className="text-sm text-slate-300">
               <span className="mr-2">⚠️</span>
               {w}
             </li>

@@ -3,11 +3,6 @@ import Papa from 'papaparse'
 import * as XLSX from 'xlsx'
 
 const ACCEPTED_EXTENSIONS = ['.csv', '.xlsx', '.xls']
-const ACCEPTED_MIME_TYPES = [
-  'text/csv',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  'application/vnd.ms-excel',
-]
 
 function detectColumnType(values) {
   const nonEmpty = values.filter((v) => v !== null && v !== undefined && v !== '')
@@ -153,7 +148,9 @@ export default function FileUpload({ onDataLoaded }) {
         onClick={() => !loading && inputRef.current.click()}
         className={`
           border-2 border-dashed rounded-xl p-12 text-center cursor-pointer transition-colors
-          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50'}
+          ${isDragging
+            ? 'border-sky-500 bg-sky-900/20'
+            : 'border-slate-600 bg-slate-700/30 hover:border-sky-500 hover:bg-slate-700/50'}
           ${loading ? 'cursor-not-allowed opacity-70' : ''}
         `}
       >
@@ -168,7 +165,7 @@ export default function FileUpload({ onDataLoaded }) {
         {loading ? (
           <div className="flex flex-col items-center gap-3">
             <svg
-              className="animate-spin h-8 w-8 text-blue-500"
+              className="animate-spin h-8 w-8 text-sky-500"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -187,12 +184,12 @@ export default function FileUpload({ onDataLoaded }) {
                 d="M4 12a8 8 0 018-8v8H4z"
               />
             </svg>
-            <p className="text-gray-600 font-medium">Reading file...</p>
+            <p className="text-slate-400 font-medium">Reading file...</p>
           </div>
         ) : (
           <div className="flex flex-col items-center gap-2">
             <svg
-              className="h-10 w-10 text-gray-400 mb-1"
+              className="h-10 w-10 text-slate-500 mb-1"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -205,26 +202,26 @@ export default function FileUpload({ onDataLoaded }) {
                 d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"
               />
             </svg>
-            <p className="text-lg font-semibold text-gray-700">Upload your file</p>
-            <p className="text-sm text-gray-500">
+            <p className="text-lg font-semibold text-slate-200">Upload your file</p>
+            <p className="text-sm text-slate-400">
               Supports CSV and Excel files (.csv, .xlsx, .xls)
             </p>
-            <p className="text-xs text-gray-400 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Drag & drop here, or{' '}
-              <span className="text-blue-500 underline">click to browse</span>
+              <span className="text-sky-400 underline">click to browse</span>
             </p>
           </div>
         )}
       </div>
 
       {error && (
-        <div className="mt-3 px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+        <div className="mt-3 px-4 py-3 rounded-lg bg-red-900/30 border border-red-800 text-red-400 text-sm">
           {error}
         </div>
       )}
 
       {success && !error && (
-        <div className="mt-3 px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-sm">
+        <div className="mt-3 px-4 py-3 rounded-lg bg-green-900/30 border border-green-800 text-green-400 text-sm">
           {success}
         </div>
       )}

@@ -15,6 +15,14 @@ const MISSING_THRESHOLD = 0.5
 const MIN_UNIQUE_NUMERIC = 10
 const MAX_UNIQUE_CATEGORICAL = 12
 
+const GRID_COLOR = '#334155'
+const AXIS_COLOR = '#64748b'
+const TOOLTIP_STYLE = {
+  contentStyle: { backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: 6 },
+  labelStyle: { color: '#f1f5f9', fontSize: 11 },
+  itemStyle: { color: '#94a3b8', fontSize: 11 },
+}
+
 function isMissing(v) {
   return v === null || v === undefined || v === '' || v === 'NA'
 }
@@ -29,6 +37,12 @@ function uniqueNonMissing(rows, col) {
 
 // ── Column selection ────────────────────────────────────────────────────────
 
+const ID_PATTERN = /id|index/i
+
+function isIdColumn(col, uniqSize, totalRows) {
+  return ID_PATTERN.test(col) || uniqSize === totalRows
+}
+
 function selectColumns(rows, columnTypes) {
   const numeric = []
   const categorical = []
@@ -38,6 +52,7 @@ function selectColumns(rows, columnTypes) {
     if (missingFraction(rows, col) > MISSING_THRESHOLD) continue
     const uniq = uniqueNonMissing(rows, col)
     if (uniq.size <= 1) continue
+    if (isIdColumn(col, uniq.size, rows.length)) continue
 
     if (type === 'numeric' && uniq.size > MIN_UNIQUE_NUMERIC) {
       numeric.push(col)
@@ -59,11 +74,6 @@ function selectColumns(rows, columnTypes) {
 // ── Data builders ───────────────────────────────────────────────────────────
 
 function buildHistogramData(rows, col) {
-  const values = rows
-    .map((r) => Number(r[col]))
-    .filter((v) => !isNaN(v) && !isMissing(rows[0]?.[col]))
-
-  // re-filter using raw row values to respect isMissing
   const nums = rows
     .filter((r) => !isMissing(r[col]) && !isNaN(Number(r[col])))
     .map((r) => Number(r[col]))
@@ -78,17 +88,12 @@ function buildHistogramData(rows, col) {
   const buckets = Array.from({ length: 10 }, (_, i) => {
     const lo = min + i * bucketSize
     const hi = lo + bucketSize
-    return {
-      label: `${Math.round(lo)}-${Math.round(hi)}`,
-      count: 0,
-      lo,
-      hi,
-    }
+    return { label: `${Math.round(lo)}-${Math.round(hi)}`, count: 0, lo, hi }
   })
 
   for (const v of nums) {
     let idx = Math.floor((v - min) / bucketSize)
-    if (idx >= 10) idx = 9 // put max value in last bucket
+    if (idx >= 10) idx = 9
     buckets[idx].count++
   }
 
@@ -139,24 +144,22 @@ function buildLineData(rows, col) {
 function HistogramCard({ col, rows }) {
   const data = buildHistogramData(rows, col)
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">
-        Distribution of {col}
-      </h3>
+    <div className="bg-slate-700 border border-slate-600 rounded-xl p-4">
+      <h3 className="text-sm font-semibold text-slate-300 mb-3">Distribution of {col}</h3>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 10 }}
-            label={{ value: col, position: 'insideBottom', offset: -16, fontSize: 11 }}
+            tick={{ fontSize: 10, fill: AXIS_COLOR }}
+            label={{ value: col, position: 'insideBottom', offset: -16, fontSize: 11, fill: AXIS_COLOR }}
           />
           <YAxis
-            tick={{ fontSize: 10 }}
-            label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 11 }}
+            tick={{ fontSize: 10, fill: AXIS_COLOR }}
+            label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 11, fill: AXIS_COLOR }}
           />
-          <Tooltip />
-          <Bar dataKey="count" fill="#6366f1" radius={[3, 3, 0, 0]} />
+          <Tooltip {...TOOLTIP_STYLE} />
+          <Bar dataKey="count" fill="#0ea5e9" radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -166,22 +169,22 @@ function HistogramCard({ col, rows }) {
 function BarCard({ col, rows }) {
   const data = buildBarData(rows, col)
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">{col} Breakdown</h3>
+    <div className="bg-slate-700 border border-slate-600 rounded-xl p-4">
+      <h3 className="text-sm font-semibold text-slate-300 mb-3">{col} Breakdown</h3>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 10 }}
-            label={{ value: col, position: 'insideBottom', offset: -16, fontSize: 11 }}
+            tick={{ fontSize: 10, fill: AXIS_COLOR }}
+            label={{ value: col, position: 'insideBottom', offset: -16, fontSize: 11, fill: AXIS_COLOR }}
           />
           <YAxis
-            tick={{ fontSize: 10 }}
-            label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 11 }}
+            tick={{ fontSize: 10, fill: AXIS_COLOR }}
+            label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 11, fill: AXIS_COLOR }}
           />
-          <Tooltip />
-          <Bar dataKey="count" fill="#10b981" radius={[3, 3, 0, 0]} />
+          <Tooltip {...TOOLTIP_STYLE} />
+          <Bar dataKey="count" fill="#34d399" radius={[3, 3, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -191,24 +194,22 @@ function BarCard({ col, rows }) {
 function LineCard({ col, rows }) {
   const data = buildLineData(rows, col)
   return (
-    <div className="bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-      <h3 className="text-sm font-semibold text-gray-700 mb-3">
-        Distribution of {col}
-      </h3>
+    <div className="bg-slate-700 border border-slate-600 rounded-xl p-4">
+      <h3 className="text-sm font-semibold text-slate-300 mb-3">Distribution of {col}</h3>
       <ResponsiveContainer width="100%" height={220}>
         <LineChart data={data} margin={{ top: 4, right: 8, left: 0, bottom: 24 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 10 }}
-            label={{ value: col, position: 'insideBottom', offset: -16, fontSize: 11 }}
+            tick={{ fontSize: 10, fill: AXIS_COLOR }}
+            label={{ value: col, position: 'insideBottom', offset: -16, fontSize: 11, fill: AXIS_COLOR }}
           />
           <YAxis
-            tick={{ fontSize: 10 }}
-            label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 11 }}
+            tick={{ fontSize: 10, fill: AXIS_COLOR }}
+            label={{ value: 'Count', angle: -90, position: 'insideLeft', fontSize: 11, fill: AXIS_COLOR }}
           />
-          <Tooltip />
-          <Line type="monotone" dataKey="count" stroke="#f59e0b" strokeWidth={2} dot={false} />
+          <Tooltip {...TOOLTIP_STYLE} />
+          <Line type="monotone" dataKey="count" stroke="#fbbf24" strokeWidth={2} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>
@@ -224,8 +225,8 @@ export default function Charts({ rows, columnTypes }) {
   if (selected.length === 0) return null
 
   return (
-    <div className="mt-6">
-      <h2 className="text-base font-semibold text-gray-800 mb-3">Charts</h2>
+    <div>
+      <h2 className="text-base font-semibold text-slate-200 mb-3">Charts</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {selected.map((col) => {
           const type = columnTypes[col]

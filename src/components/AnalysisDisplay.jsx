@@ -1,9 +1,9 @@
 export default function AnalysisDisplay({ analysisResult, isLoading }) {
   if (isLoading) {
     return (
-      <div className="mt-6 flex flex-col items-center gap-3 py-8">
+      <div className="flex flex-col items-center gap-3 py-8">
         <svg
-          className="animate-spin h-8 w-8 text-blue-500"
+          className="animate-spin h-8 w-8 text-sky-500"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -22,7 +22,7 @@ export default function AnalysisDisplay({ analysisResult, isLoading }) {
             d="M4 12a8 8 0 018-8v8H4z"
           />
         </svg>
-        <p className="text-gray-500 font-medium">AI is analyzing your data...</p>
+        <p className="text-slate-400 font-medium">AI is analyzing your data...</p>
       </div>
     )
   }
@@ -31,9 +31,9 @@ export default function AnalysisDisplay({ analysisResult, isLoading }) {
 
   if (analysisResult.error) {
     return (
-      <div className="mt-6 px-4 py-4 rounded-lg bg-red-50 border border-red-200 text-red-700">
+      <div className="px-4 py-4 rounded-lg bg-red-900/30 border border-red-800 text-red-400">
         <p className="font-medium">{analysisResult.message}</p>
-        <p className="text-sm mt-1">Try uploading again</p>
+        <p className="text-sm mt-1 text-red-500">Try uploading again</p>
       </div>
     )
   }
@@ -41,23 +41,23 @@ export default function AnalysisDisplay({ analysisResult, isLoading }) {
   const { summary, keyInsights, recommendations, dataWarnings } = analysisResult
 
   return (
-    <div className="mt-6 space-y-6">
+    <div className="space-y-6">
       {/* Summary */}
-      <div className="px-4 py-4 rounded-lg bg-blue-50 border border-blue-200 text-blue-900 text-sm leading-relaxed">
+      <div className="px-4 py-4 rounded-lg bg-sky-900/30 border border-sky-800 text-sky-200 text-sm leading-relaxed">
         {summary}
       </div>
 
       {/* Key Insights */}
       <div>
-        <h2 className="text-base font-semibold text-gray-800 mb-3">Key Insights</h2>
+        <h2 className="text-base font-semibold text-slate-200 mb-3">Key Insights</h2>
         <div className="space-y-3">
           {keyInsights.map((insight, i) => (
             <div
               key={i}
-              className="bg-white border border-gray-200 rounded-lg px-4 py-3 shadow-sm"
+              className="bg-slate-700 border border-slate-600 rounded-lg px-4 py-3"
             >
-              <p className="font-semibold text-gray-800 text-sm">{insight.title}</p>
-              <p className="text-gray-600 text-sm mt-1">{insight.description}</p>
+              <p className="font-semibold text-slate-100 text-sm">{insight.title}</p>
+              <p className="text-slate-400 text-sm mt-1">{insight.description}</p>
             </div>
           ))}
         </div>
@@ -65,10 +65,10 @@ export default function AnalysisDisplay({ analysisResult, isLoading }) {
 
       {/* Recommendations */}
       <div>
-        <h2 className="text-base font-semibold text-gray-800 mb-3">Recommendations</h2>
+        <h2 className="text-base font-semibold text-slate-200 mb-3">Recommendations</h2>
         <ol className="space-y-2 list-decimal list-inside">
           {recommendations.map((rec, i) => (
-            <li key={i} className="text-sm text-gray-700">
+            <li key={i} className="text-sm text-slate-300">
               {rec}
             </li>
           ))}
@@ -77,11 +77,11 @@ export default function AnalysisDisplay({ analysisResult, isLoading }) {
 
       {/* Data Warnings */}
       {dataWarnings && dataWarnings.length > 0 && (
-        <div className="px-4 py-4 rounded-lg bg-amber-50 border border-amber-200">
-          <h2 className="text-sm font-semibold text-amber-800 mb-2">Data Warnings</h2>
+        <div className="px-4 py-4 rounded-lg bg-amber-900/30 border border-amber-800">
+          <h2 className="text-sm font-semibold text-amber-300 mb-2">Data Warnings</h2>
           <ul className="space-y-1">
             {dataWarnings.map((w, i) => (
-              <li key={i} className="text-sm text-amber-800">
+              <li key={i} className="text-sm text-amber-400">
                 {w}
               </li>
             ))}
