@@ -8,14 +8,6 @@
 
 A web app that takes a CSV or Excel file and returns an AI-generated data quality report, key business insights, visualizations, and a downloadable PDF — all in under 30 seconds. Data analysts, students, and anyone working with tabular data will find it useful for a fast first-pass understanding of an unfamiliar dataset.
 
----
-
-## Demo
-
-📸 Screenshot: [coming soon — run locally to see it in action]
-
----
-
 ## Features
 
 - Drag-and-drop CSV and Excel upload
@@ -105,4 +97,4 @@ A web app that takes a CSV or Excel file and returns an AI-generated data qualit
 
 ---
 
-Made as a portfolio project by Stanislav — Data Analyst | 2026
+Made as a portfolio project by Stanislav Patlakha — Data Analyst | 2026
